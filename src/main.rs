@@ -1,24 +1,16 @@
-use std::io::{self, Read};
+#![warn(
+    clippy::all,
+    clippy::pedantic,
+    clippy::print_stdout,
+    clippy::arithmetic_side_effects,
+    clippy::as_conversions,
+    clippy::integer_division
+)]
 
-use crossterm::terminal::{disable_raw_mode, enable_raw_mode};
+use editor::Editor;
+
+mod editor;
 
 fn main() {
-    enable_raw_mode().unwrap();
-    for b in io::stdin().bytes() {
-        match b {
-            Ok(b) => {
-                let c = b as char;
-                if c.is_control() {
-                    println!("Binary: {0:08b} ASCII: {0:#03} \r", b);
-                } else {
-                    println!("Binary: {0:08b} ASCII: {0:#03} Character: {1:#?}\r", b, c);
-                }
-                if c == 'q' {
-                    disable_raw_mode().unwrap();
-                    break;
-                }
-            }
-            Err(err) => println!("Error: {}", err),
-        }
-    }
+    Editor::default().run();
 }
